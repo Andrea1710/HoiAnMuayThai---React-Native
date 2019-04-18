@@ -13,12 +13,12 @@ const SLIDE_DATA = [
       </Text>
     ),
     color: "red",
-    swipe: "Swipe > > > > > >"
+    swipe: "< < < < < < < < < Swipe"
   },
   {
     text: "Learn how to fight, stay fit, lose weight and...",
     color: "black",
-    swipe: "Swipe > > > > > > "
+    swipe: "< < < < < < < < < Swipe"
   },
   { text: "...enjoy your time with us!", color: "red" }
 ];
