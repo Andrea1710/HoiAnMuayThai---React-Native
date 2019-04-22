@@ -15,20 +15,20 @@ import kick_boxing_class from "../assets/kick-boxing-class.jpg";
 const MUAY_THAI_CLASSES = [
   {
     id: 1,
-    title: "OPEN SESSION - MUAY THAI",
-    image: muay_thai_class,
-    description: "Learn the Art of the Eight Limbs",
-    time: "17:30",
-    color: "red",
-    buttontext: "JOIN NOW"
-  },
-  {
-    id: 2,
     title: "MORNING SESSION - KICK",
     image: kick_boxing_class,
     description: "Stay fit and improve your strength",
     time: "09:00",
     color: "blue",
+    buttontext: "JOIN NOW"
+  },
+  {
+    id: 2,
+    title: "OPEN SESSION - MUAY THAI",
+    image: muay_thai_class,
+    description: "Learn the Art of the Eight Limbs",
+    time: "17:30",
+    color: "red",
     buttontext: "JOIN NOW"
   }
 ];
