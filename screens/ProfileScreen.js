@@ -24,7 +24,7 @@ class ProfileScreen extends Component {
             <Avatar
               rounded
               source={{
-                uri: "https://randomuser.me/api/portraits/men/2.jpg"
+                uri: "https://randomuser.me/api/portraits/men/3.jpg"
               }}
               size="xlarge"
               containerStyle={{ margin: 10 }}
