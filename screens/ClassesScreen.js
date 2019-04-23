@@ -1,21 +1,15 @@
 import React, { Component } from "react";
-import {
-  View,
-  Text,
-  ImageBackground,
-  StyleSheet,
-  ScrollView
-} from "react-native";
-import { Card, Button, Icon } from "react-native-elements";
+import { View, ImageBackground, StyleSheet, ScrollView } from "react-native";
+import { Card, Button, Text } from "react-native-elements";
 
 import bgImage from "../assets/background.jpg";
-import muay_thai_class from "../assets/muay-thai-class.jpg";
+import muay_thai_class from "../assets/muay-thai-class.png";
 import kick_boxing_class from "../assets/kick-boxing-class.jpg";
 
 const MUAY_THAI_CLASSES = [
   {
     id: 1,
-    title: "MORNING SESSION - KICK",
+    title: "MORNING SESSION - KICK BOXING",
     image: kick_boxing_class,
     description: "Stay fit and improve your strength",
     time: "09:00",
@@ -37,6 +31,9 @@ class HomeScreen extends Component {
   render() {
     return (
       <ImageBackground source={bgImage} style={styles.backgroundContainer}>
+        <Text style={{ color: "red", textAlign: "center" }} h1>
+          Classes
+        </Text>
         <ScrollView>
           <View style={styles.homeContainer}>
             {MUAY_THAI_CLASSES.map(mtClass => {
@@ -71,6 +68,7 @@ class HomeScreen extends Component {
                       marginBottom: 0,
                       backgroundColor: "#141414"
                     }}
+                    titleStyle={{ color: "red" }}
                     title={mtClass.buttontext}
                     onPress={() => alert("You joined the class!")}
                   />

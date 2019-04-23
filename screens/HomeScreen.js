@@ -41,7 +41,7 @@ class HomeScreen extends Component {
         <ScrollView>
           <Card
             title="Check our Classes live!"
-            image={require("../assets/muay-thai-class.jpg")}
+            image={require("../assets/muay-thai-class.png")}
             containerStyle={{
               backgroundColor: "rgba(255,255,255,0.5)",
               borderColor: "black",
