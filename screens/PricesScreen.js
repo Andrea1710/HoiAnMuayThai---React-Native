@@ -1,5 +1,11 @@
 import React, { Component } from "react";
-import { View, ScrollView, StyleSheet, ImageBackground } from "react-native";
+import {
+  View,
+  ScrollView,
+  StyleSheet,
+  ImageBackground,
+  Linking
+} from "react-native";
 import { PricingCard, Text } from "react-native-elements";
 
 import bgImage from "../assets/background.jpg";
@@ -64,6 +70,20 @@ const PRICES = [
 ];
 
 class PricesScreen extends Component {
+  state = {
+    uri: "https://www.facebook.com/hoianmuaythai/"
+  };
+
+  handleClick = () => {
+    Linking.canOpenURL(this.state.uri).then(supported => {
+      if (supported) {
+        Linking.openURL(this.state.uri);
+      } else {
+        console.log("Don't know how to open URI: " + this.state.uri);
+      }
+    });
+  };
+
   render() {
     return (
       <ImageBackground source={bgImage} style={styles.backgroundContainer}>
@@ -81,8 +101,10 @@ class PricesScreen extends Component {
                   price={price.price}
                   info={price.info}
                   button={price.buttonTitle}
-                  onButtonPress={() =>
-                    this.props.navigation.navigate("TIMETABLE")
+                  onButtonPress={
+                    price.title === "Private Class"
+                      ? this.handleClick
+                      : () => this.props.navigation.navigate("TIMETABLE")
                   }
                   containerStyle={{
                     backgroundColor: "rgba(255,255,255,0.7)"

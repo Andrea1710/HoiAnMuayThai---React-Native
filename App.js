@@ -13,6 +13,8 @@ import PricesScreen from "./screens/PricesScreen";
 import EventsScreen from "./screens/EventsScreen";
 import TimetableScreen from "./screens/TimetableScreen";
 import AboutusScreen from "./screens/AboutusScreen";
+import TrainersScreen from "./screens/TrainersScreen";
+import MuaythaiScreen from "./screens/MuaythaiScreen";
 
 const MainNavigator = createBottomTabNavigator({
   welcome: {
@@ -148,19 +150,74 @@ const MainNavigator = createBottomTabNavigator({
                 )
             }
           },
-          ABOUTUS: {
-            screen: AboutusScreen,
+          MUAYTHAI: {
+            screen: MuaythaiScreen,
             navigationOptions: {
-              tabBarLabel: "ABOUT US",
+              tabBarLabel: "MUAY THAI",
               tabBarIcon: ({ focused }) =>
                 focused ? (
                   <Image
-                    source={require("./assets/aboutus-active.png")}
+                    source={require("./assets/muaythai-active.png")}
                     style={styles.tabbarIcon}
                   />
                 ) : (
                   <Image
-                    source={require("./assets/aboutus-inactive.png")}
+                    source={require("./assets/muaythai-inactive.png")}
+                    style={styles.tabbarIcon}
+                  />
+                )
+            }
+          }
+        })
+      },
+      ABOUTUS: {
+        navigationOptions: {
+          tabBarLabel: "ABOUT US",
+          tabBarIcon: ({ focused }) =>
+            focused ? (
+              <Image
+                source={require("./assets/aboutus-active.png")}
+                style={styles.tabbarIcon}
+              />
+            ) : (
+              <Image
+                source={require("./assets/aboutus-inactive.png")}
+                style={styles.tabbarIcon}
+              />
+            )
+        },
+        screen: createBottomTabNavigator({
+          OURHISTORY: {
+            screen: AboutusScreen,
+            navigationOptions: {
+              tabBarLabel: "OUR HISTORY",
+              tabBarIcon: ({ focused }) =>
+                focused ? (
+                  <Image
+                    source={require("./assets/ourhistory-active.png")}
+                    style={styles.tabbarIcon}
+                  />
+                ) : (
+                  <Image
+                    source={require("./assets/ourhistory-inactive.png")}
+                    style={styles.tabbarIcon}
+                  />
+                )
+            }
+          },
+          TRAINERS: {
+            screen: TrainersScreen,
+            navigationOptions: {
+              tabBarLabel: "OUR TRAINERS",
+              tabBarIcon: ({ focused }) =>
+                focused ? (
+                  <Image
+                    source={require("./assets/trainers-active.png")}
+                    style={styles.tabbarIcon}
+                  />
+                ) : (
+                  <Image
+                    source={require("./assets/trainers-inactive.png")}
                     style={styles.tabbarIcon}
                   />
                 )
