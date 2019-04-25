@@ -12,7 +12,7 @@ import bgImage from "../assets/background.jpg";
 
 const HOME_PAGE = [
   {
-    text: "Here you can find every information about HOI AN MUAY THAI GYM!",
+    text: "Here you can find every information about \n HOI AN MUAY THAI GYM!",
     color: "black"
   },
   {
@@ -41,7 +41,7 @@ class HomeScreen extends Component {
         <ScrollView>
           <Card
             title="Check our Classes live!"
-            image={require("../assets/muay-thai-class.jpg")}
+            image={require("../assets/muay-thai-class.png")}
             containerStyle={{
               backgroundColor: "rgba(255,255,255,0.5)",
               borderColor: "black",
@@ -185,7 +185,8 @@ const styles = StyleSheet.create({
   homeText: {
     textAlign: "center",
     fontSize: 18,
-    color: "black"
+    color: "black",
+    margin: 10
   },
   buttonStyle: {
     borderRadius: 10,

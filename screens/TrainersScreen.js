@@ -4,30 +4,28 @@ import { Card, Button, Text } from "react-native-elements";
 
 import bgImage from "../assets/background.jpg";
 import muay_thai_class from "../assets/muay-thai-class.png";
-import kick_boxing_class from "../assets/kick-boxing-class.jpg";
+import miguel from "../assets/miguel.jpg";
 
-const MUAY_THAI_CLASSES = [
+const TRAINERS = [
   {
     id: 1,
-    title: "MORNING SESSION - KICK BOXING",
-    image: kick_boxing_class,
-    description: "Stay fit and improve your strength",
-    time: "09:00",
-    color: "blue",
-    buttontext: "JOIN NOW"
+    title: "MIGUEL ARAYA",
+    image: miguel,
+    description: "Muay Thai instructor - Professional Fighter",
+    fights: "8 Figths - 6 W - 2 L - 0 D",
+    buttontext: "PROFILE"
   },
   {
     id: 2,
-    title: "OPEN SESSION - MUAY THAI",
-    image: muay_thai_class,
-    description: "Learn the Art of the Eight Limbs",
-    time: "17:30",
-    color: "red",
-    buttontext: "JOIN NOW"
+    title: "ANDREA BELLUCCIA",
+    image: miguel,
+    description: "Muay Thai instructor - Professional Fighter",
+    fights: "8 Figths - 6 W - 2 L - 0 D",
+    buttontext: "PROFILE"
   }
 ];
 
-class HomeScreen extends Component {
+class TrainersScreen extends Component {
   render() {
     return (
       <ImageBackground source={bgImage} style={styles.backgroundContainer}>
@@ -36,13 +34,13 @@ class HomeScreen extends Component {
         </Text>
         <ScrollView>
           <View style={styles.homeContainer}>
-            {MUAY_THAI_CLASSES.map(mtClass => {
+            {TRAINERS.map(trainer => {
               return (
                 <Card
-                  key={mtClass.id}
-                  title={mtClass.title}
-                  image={mtClass.image}
-                  featuredTitle={mtClass.time}
+                  key={trainer.id}
+                  title={trainer.title}
+                  image={trainer.image}
+                  featuredTitle={trainer.fights}
                   titleNumberOfLines={2}
                   containerStyle={{
                     backgroundColor: "rgba(255,255,255,0.5)",
@@ -57,7 +55,7 @@ class HomeScreen extends Component {
                   }}
                 >
                   <Text style={{ marginBottom: 10 }}>
-                    {mtClass.description}
+                    {trainer.description}
                   </Text>
                   <Button
                     backgroundColor="rgba(255,255,255,0.7)"
@@ -69,7 +67,7 @@ class HomeScreen extends Component {
                       backgroundColor: "#141414"
                     }}
                     titleStyle={{ color: "red" }}
-                    title={mtClass.buttontext}
+                    title={trainer.buttontext}
                     onPress={() => alert("You joined the class!")}
                   />
                 </Card>
@@ -94,4 +92,4 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HomeScreen;
+export default TrainersScreen;

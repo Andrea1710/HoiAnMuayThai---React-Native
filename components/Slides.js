@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { View, Text, ScrollView, Dimensions } from "react-native";
+import { View, Text, ScrollView, Dimensions, Image } from "react-native";
 import { Button } from "react-native-elements";
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -24,6 +24,7 @@ class Slides extends Component {
           key={slide.text}
           style={[styles.slideStyle, { backgroundColor: slide.color }]}
         >
+          <Image source={slide.image} style={styles.image} />
           <Text style={styles.textStyle}>{slide.text}</Text>
           <Text style={{ color: "white", marginTop: 80 }}>{slide.swipe}</Text>
           {this.renderLastSlide(index)}
@@ -62,7 +63,12 @@ const styles = {
     margin: 20
   },
   buttonStyle: {
-    backgroundColor: "black"
+    backgroundColor: "red"
+  },
+  image: {
+    width: 300,
+    height: 300,
+    borderRadius: 20
   }
 };
 
