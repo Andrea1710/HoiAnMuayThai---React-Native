@@ -1,6 +1,9 @@
 import React, { Component } from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
+import { StyleSheet, View, Image } from "react-native";
 import { createBottomTabNavigator, createAppContainer } from "react-navigation";
+
+import { Provider } from "react-redux";
+import store from "./store";
 
 import Header from "./components/Header.js";
 import HomeScreen from "./screens/HomeScreen";
@@ -17,11 +20,11 @@ import TrainersScreen from "./screens/TrainersScreen";
 import MuaythaiScreen from "./screens/MuaythaiScreen";
 
 const MainNavigator = createBottomTabNavigator({
+  auth: { screen: AuthScreen, navigationOptions: { tabBarVisible: false } },
   welcome: {
     screen: WelcomeScreen,
     navigationOptions: { tabBarVisible: false }
   },
-  auth: { screen: AuthScreen, navigationOptions: { tabBarVisible: true } },
   main: {
     navigationOptions: { tabBarVisible: false },
     screen: createBottomTabNavigator({
@@ -261,13 +264,17 @@ const styles = StyleSheet.create({
 
 const AppContainer = createAppContainer(MainNavigator);
 
-export default class App extends Component {
+class App extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Header headerText="HOI AN MUAY THAI GYM" />
-        <AppContainer />
-      </View>
+      <Provider store={store}>
+        <View style={styles.container}>
+          <Header headerText="HOI AN MUAY THAI GYM" />
+          <AppContainer />
+        </View>
+      </Provider>
     );
   }
 }
+
+export default App;
