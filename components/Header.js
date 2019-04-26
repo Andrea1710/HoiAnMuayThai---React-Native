@@ -1,7 +1,7 @@
 import React from "react";
 import { Text, View, Image } from "react-native";
 
-const Header = function(props) {
+const Header = props => {
   const { viewStyle, textStyle } = styles;
 
   return (
@@ -21,11 +21,11 @@ const styles = {
     justifyContent: "space-around",
     alignItems: "center",
     height: 100,
-    paddingTop: 20,
+    paddingTop: 30,
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    elevation: 2,
+    shadowOffset: { width: 0, height: 5 },
+    shadowOpacity: 0.5,
+    elevation: 5,
     position: "relative",
     flexDirection: "row"
   },

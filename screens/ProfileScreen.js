@@ -1,55 +1,41 @@
 import React, { Component } from "react";
-import { View, Platform, ImageBackground, StyleSheet } from "react-native";
-import { Avatar, Text, Button, Icon } from "react-native-elements";
+import { AsyncStorage } from "react-native";
+import { View, ImageBackground, StyleSheet } from "react-native";
+import { Image, Text, Button, Icon } from "react-native-elements";
+import { connect } from "react-redux";
 
 import bgImage from "../assets/nak-muay.jpg";
 
-const PROFILE = {
-  name: "Nak Muay",
-  email: "test@test.com",
-  username: "Nak Muay 10",
-  password: "********",
-  gender: "male",
-  subscription: "25/11/2018"
-};
-
 class ProfileScreen extends Component {
+  logout = () => {
+    AsyncStorage.removeItem("fb_token");
+    this.props.navigation.navigate("auth");
+  };
+
   render() {
+    const { email, name, picture, id } = this.props.userInfo;
+
     return (
       <ImageBackground source={bgImage} style={styles.backgroundContainer}>
         <View
           style={{ backgroundColor: "rgba(255,255,255,0.7)", height: "100%" }}
         >
-          <View>
-            <Avatar
-              rounded
-              source={{
-                uri: "https://randomuser.me/api/portraits/men/3.jpg"
-              }}
-              size="xlarge"
-              containerStyle={{ margin: 10 }}
+          <View style={{ margin: 20 }}>
+            <Image
+              source={{ uri: picture.data.url }}
+              style={{ width: 100, height: 100, margin: 20 }}
             />
-            <Text h4>NAME: {PROFILE.name}</Text>
-            <Text h4>EMAIL: {PROFILE.email}</Text>
-            <Text h4>USERNAME: {PROFILE.username}</Text>
-            <Text h4>PASSWORD: {PROFILE.password}</Text>
-            <Text h4>GENDER: {PROFILE.gender}</Text>
-            <Text h4>SUBSCIPTION DATE: {PROFILE.subscription}</Text>
+            <Text h5>
+              NAME: <Text h4>{name}</Text>
+            </Text>
+            <Text h5>
+              EMAIL: <Text h4>{email}</Text>
+            </Text>
+            <Text h5>
+              ID: <Text h4>{id}</Text>
+            </Text>
           </View>
           <View>
-            <Button
-              icon={
-                <Icon
-                  name="settings"
-                  size={20}
-                  color="white"
-                  iconStyle={{ marginRight: 10 }}
-                />
-              }
-              title="Edit Profile"
-              style={{ margin: 20 }}
-            />
-
             <Button
               icon={
                 <Icon
@@ -62,6 +48,7 @@ class ProfileScreen extends Component {
               title="Log Out"
               buttonStyle={{ backgroundColor: "red" }}
               style={{ margin: 20 }}
+              onPress={() => this.logout()}
             />
           </View>
         </View>
@@ -81,4 +68,8 @@ const styles = StyleSheet.create({
   }
 });
 
-export default ProfileScreen;
+const mapStateToProps = ({ auth }) => {
+  return { userInfo: auth.userInfo };
+};
+
+export default connect(mapStateToProps)(ProfileScreen);

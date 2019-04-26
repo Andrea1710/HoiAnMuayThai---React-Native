@@ -7,6 +7,7 @@ import {
   ScrollView
 } from "react-native";
 import { Card, Button, Icon } from "react-native-elements";
+import { connect } from "react-redux";
 
 import bgImage from "../assets/background.jpg";
 
@@ -28,7 +29,7 @@ class HomeScreen extends Component {
       <ImageBackground source={bgImage} style={styles.backgroundContainer}>
         <View>
           <Text style={[styles.homeText, { fontWeight: "bold" }]}>
-            Welcome ANDREA
+            Welcome {this.props.userInfo.name}!
           </Text>
           {HOME_PAGE.map(description => {
             return (
@@ -199,4 +200,10 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HomeScreen;
+const mapStateToProps = ({ auth }) => {
+  return {
+    userInfo: auth.userInfo
+  };
+};
+
+export default connect(mapStateToProps)(HomeScreen);
