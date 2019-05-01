@@ -28,16 +28,18 @@ class WelcomeScreen extends Component {
   };
 
   render() {
+    const fullName = this.props.userInfo.name;
+    const name = fullName.split(" ")[0];
+
     const SLIDE_DATA = [
       {
         text: (
           <Text>
-            Hi{" "}
-            <Text style={{ fontWeight: "bold" }}>
-              {this.props.userInfo.name}
+            Hi <Text style={{ fontWeight: "bold" }}>{name}</Text>!{"\n"}
+            {"\n"} Welcome to {"\n"}{" "}
+            <Text style={{ fontWeight: "bold", color: "red" }}>
+              HOI AN MUAY THAI GYM
             </Text>
-            !{"\n"} Welcome to {"\n"}{" "}
-            <Text style={{ fontWeight: "bold" }}>HOI AN MUAY THAI</Text>
           </Text>
         ),
         color: "#141414",
@@ -59,7 +61,7 @@ class WelcomeScreen extends Component {
 
     return (
       <Slides
-        name={this.props.userInfo.name}
+        name="{this.props.userInfo.name}"
         data={SLIDE_DATA}
         onComplete={this.onSlidesComplete}
       />

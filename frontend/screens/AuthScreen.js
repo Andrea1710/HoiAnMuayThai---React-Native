@@ -8,7 +8,8 @@ import {
   Image,
   Dimensions,
   TouchableOpacity,
-  KeyboardAvoidingView
+  KeyboardAvoidingView,
+  Platform
 } from "react-native";
 import { Button, SocialIcon } from "react-native-elements";
 
@@ -45,17 +46,117 @@ class SignUp extends Component {
     name: "",
     password: "",
     email: "",
-    gender: "",
+    birthday: "",
     formErrors: {
       name: "",
       email: "",
       password: "",
-      gender: ""
+      birthday: ""
     },
     errors: "",
     isLogin: true,
     showPass: true,
     press: false
+  };
+
+  onChangeHandler = event => {
+    const { name, value } = event.target;
+    let formErrors = this.state.formErrors;
+
+    switch (name) {
+      case "name":
+        formErrors.name =
+          value.length < 3 ? "Minimum 3 characters required" : "";
+        break;
+      case "email":
+        formErrors.email = emailRegex.test(value)
+          ? ""
+          : "Invalid Email address";
+        break;
+      case "password":
+        formErrors.password =
+          value.length < 6 ? "Minimum 6 characters required" : "";
+        break;
+      case "birthday":
+        formErrors.birthday =
+          value.length === 0 ? "This field is required" : "";
+        break;
+      default:
+        break;
+    }
+    this.setState({ formErrors, [name]: value });
+  };
+
+  submitHandler = event => {
+    event.preventDefault();
+    const name = this.state.name;
+    const email = this.state.email;
+    const password = this.state.password;
+    const birthday = this.state.birthday;
+
+    if (formValid(this.state)) {
+      console.log(`
+        --SUBMITTING
+          Name: ${this.state.name}
+          Email: ${this.state.email}
+          Password: ${this.state.password}
+          Birthday: ${this.state.birthday}
+      `);
+    } else {
+      console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
+    }
+
+    let requestBody = {
+      query: `
+        query {
+          login(email: "${email}", password: "${password}") {
+            userId
+            email
+            name
+            birthday
+          }
+        }
+      `
+    };
+
+    if (!this.state.isLogin) {
+      requestBody = {
+        query: `
+          mutation {
+            createUser(userInput: {name: "${name}", email: "${email}", password: "${password}", birthday: "${birthday}"}) {
+              _id
+              name
+              email
+              birthday
+            }
+          }
+        `
+      };
+    }
+
+    fetch("http://localhost:8000/graphql", {
+      method: "POST",
+      body: JSON.stringify(requestBody),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => {
+        if (res.status !== 200 && res.status !== 201) {
+          this.setState({
+            errors: "Email or password are incorrect. Check and try again."
+          });
+          throw new Error("Failed");
+        }
+        return res.json();
+      })
+      .then(resData => {
+        console.log("ResData", resData);
+        this.props.navigation.navigate("welcome");
+      })
+      .catch(err => {
+        console.log(err);
+      });
   };
 
   login = () => {
@@ -91,22 +192,14 @@ class SignUp extends Component {
         formErrors.password =
           value.length < 6 ? "Minimum 6 characters required" : "";
         break;
-      case "gender":
-        formErrors.gender = value.length === 0 ? "This field is required" : "";
+      case "birthday":
+        formErrors.birthday =
+          value.length === 0 ? "This field is required" : "";
         break;
       default:
         break;
     }
     this.setState({ formErrors, [key]: value });
-  };
-
-  signUp = async () => {
-    const { name, password, email, gender } = this.state;
-    try {
-      alert("user successfully signed up!: ", success);
-    } catch (err) {
-      alert("error signing up: ", err);
-    }
   };
 
   showPass = () => {
@@ -127,6 +220,8 @@ class SignUp extends Component {
   };
 
   render() {
+    console.log(this.state);
+
     const { formErrors } = this.state;
 
     const login = (
@@ -183,8 +278,13 @@ class SignUp extends Component {
             <Text style={styles.errorMessage}>{formErrors.password}</Text>
           )}
         </View>
-        <TouchableOpacity style={styles.btnLogin}>
-          <Text style={styles.text}>Login</Text>
+        <TouchableOpacity>
+          <Button
+            title="Login"
+            onPress={this.submitHandler}
+            style={styles.text}
+            buttonStyle={styles.btnLogin}
+          />
         </TouchableOpacity>
       </KeyboardAvoidingView>
     );
@@ -204,6 +304,7 @@ class SignUp extends Component {
                 ? [styles.input, { borderWidth: 1, borderColor: "red" }]
                 : styles.input
             }
+            value={this.state.name}
             placeholder={"Username"}
             placeholderTextColor={"rgba(255,255,255,0.7)"}
             underlineColorAndroid="transparent"
@@ -226,6 +327,7 @@ class SignUp extends Component {
                 ? [styles.input, { borderWidth: 1, borderColor: "red" }]
                 : styles.input
             }
+            value={this.state.password}
             placeholder={"Password"}
             secureTextEntry={this.state.showPass}
             placeholderTextColor={"rgba(255,255,255,0.7)"}
@@ -256,6 +358,7 @@ class SignUp extends Component {
                 ? [styles.input, { borderWidth: 1, borderColor: "red" }]
                 : styles.input
             }
+            value={this.state.email}
             placeholder={"Email"}
             placeholderTextColor={"rgba(255,255,255,0.7)"}
             underlineColorAndroid="transparent"
@@ -274,21 +377,27 @@ class SignUp extends Component {
           />
           <TextInput
             style={
-              formErrors.gender.length > 0
+              formErrors.birthday.length > 0
                 ? [styles.input, { borderWidth: 1, borderColor: "red" }]
                 : styles.input
             }
-            placeholder={"Gender"}
+            value={this.state.birthday}
+            placeholder={"Birthday"}
             placeholderTextColor={"rgba(255,255,255,0.7)"}
             underlineColorAndroid="transparent"
-            onChangeText={val => this.onChangeText("gender", val)}
+            onChangeText={val => this.onChangeText("birthday", val)}
           />
-          {formErrors.gender.length > 0 && (
-            <Text style={styles.errorMessage}>{formErrors.gender}</Text>
+          {formErrors.birthday.length > 0 && (
+            <Text style={styles.errorMessage}>{formErrors.birthday}</Text>
           )}
         </View>
-        <TouchableOpacity style={styles.btnLogin}>
-          <Text style={styles.text}>Register</Text>
+        <TouchableOpacity>
+          <Button
+            title="Register"
+            onPress={this.submitHandler}
+            style={styles.text}
+            buttonStyle={styles.btnLogin}
+          />
         </TouchableOpacity>
       </KeyboardAvoidingView>
     );
@@ -298,7 +407,7 @@ class SignUp extends Component {
           <Image source={logo} style={styles.logo} />
           <Text style={styles.logoText}>HOI AN MUAY THAI GYM</Text>
         </View>
-        {this.state.isLogin ? signup : login}
+        {this.state.isLogin ? login : signup}
         <SocialIcon
           title="Sign In With Facebook"
           button
@@ -306,7 +415,13 @@ class SignUp extends Component {
           onPress={() => this.login()}
           style={{ width: 300 }}
         />
-        <View style={{ marginBottom: 100 }}>
+        <View
+          style={
+            Platform.OS === "android"
+              ? { marginBottom: 20 }
+              : { marginBottom: 100 }
+          }
+        >
           <Button
             buttonStyle={{
               backgroundColor: "red",
@@ -316,7 +431,7 @@ class SignUp extends Component {
               width: 300
             }}
             onPress={this.switchModeHandler}
-            title={this.state.isLogin ? "Switch to Login" : "Switch to SignUp"}
+            title={this.state.isLogin ? "Switch to Signup" : "Switch to Login"}
             raised={true}
           />
         </View>
@@ -378,16 +493,14 @@ const styles = StyleSheet.create({
     right: 37
   },
   btnLogin: {
-    width: WIDTH - 55,
-    height: 45,
-    borderRadius: 25,
-    backgroundColor: "rgba(242,38,29,0.7)",
-    justifyContent: "center",
-    marginTop: 20
+    backgroundColor: "red",
+    margin: 10,
+    borderWidth: 1,
+    borderColor: "black"
   },
   text: {
-    color: "rgba(255,255,255,0.9)",
-    fontSize: 16,
+    color: "black",
+    fontSize: 18,
     textAlign: "center"
   },
   errorMessage: {
