@@ -1,10 +1,10 @@
 import React, { Component } from "react";
 import { View, ImageBackground, StyleSheet, ScrollView } from "react-native";
-import { Card, Button, Text } from "react-native-elements";
+import { Card, Button, Text, Overlay } from "react-native-elements";
 
 import bgImage from "../assets/background.jpg";
-import muay_thai_class from "../assets/muay-thai-class.png";
 import miguel from "../assets/miguel.jpg";
+import andrea from "../assets/andrea.jpg";
 
 const TRAINERS = [
   {
@@ -18,7 +18,7 @@ const TRAINERS = [
   {
     id: 2,
     title: "ANDREA BELLUCCIA",
-    image: miguel,
+    image: andrea,
     description: "Muay Thai instructor - Professional Fighter",
     fights: "8 Figths - 6 W - 2 L - 0 D",
     buttontext: "PROFILE"
@@ -26,6 +26,18 @@ const TRAINERS = [
 ];
 
 class TrainersScreen extends Component {
+  state = {
+    show: false
+  };
+
+  onOpenOverlay = () => {
+    this.setState(prevState => {
+      return {
+        show: !prevState.show
+      };
+    });
+  };
+
   render() {
     return (
       <ImageBackground source={bgImage} style={styles.backgroundContainer}>
@@ -68,8 +80,38 @@ class TrainersScreen extends Component {
                     }}
                     titleStyle={{ color: "red" }}
                     title={trainer.buttontext}
-                    onPress={() => alert("You joined the class!")}
+                    onPress={this.onOpenOverlay}
                   />
+                  {this.state.show ? (
+                    <Overlay
+                      overlayStyle={{ borderRadius: 30 }}
+                      onBackdropPress={this.onOpenOverlay}
+                      width={300}
+                      height={300}
+                      isVisible
+                    >
+                      <View>
+                        <Text>TRAINER NAME</Text>
+                        <Text>TRAINER DESCRIPTION</Text>
+                        <Text>TRAINER EXPERIENCE</Text>
+                        <Text
+                          style={{
+                            borderWidth: 1,
+                            borderColor: "red",
+                            backgroundColor: "black",
+                            color: "white",
+                            position: "relative",
+                            marginTop: "60%",
+                            textAlign: "center",
+                            padding: 5
+                          }}
+                          onPress={this.onOpenOverlay}
+                        >
+                          Close
+                        </Text>
+                      </View>
+                    </Overlay>
+                  ) : null}
                 </Card>
               );
             })}

@@ -8,6 +8,7 @@ import {
 } from "react-native";
 import { Card, Button, Icon } from "react-native-elements";
 import { connect } from "react-redux";
+import moment from "moment";
 
 import bgImage from "../assets/background.jpg";
 
@@ -25,11 +26,25 @@ const HOME_PAGE = [
 
 class HomeScreen extends Component {
   render() {
+    const fullName = this.props.userInfo.name;
+    const name = fullName.split(" ")[0];
+
+    const currentDay = moment().format("MM/D");
+    const { birthday } = this.props.userInfo;
+    const birthdayArr = birthday.split("/");
+    const monthDay = `${birthdayArr[0]}/${birthdayArr[1]}`;
+
     return (
       <ImageBackground source={bgImage} style={styles.backgroundContainer}>
         <View>
-          <Text style={[styles.homeText, { fontWeight: "bold" }]}>
-            Welcome {this.props.userInfo.name}!
+          <Text
+            style={[
+              styles.homeText,
+              { fontWeight: "bold", fontSize: 30, marginTop: 40 }
+            ]}
+          >
+            Hi {name}! {"\n"}
+            {currentDay === monthDay ? <Text>Happy Birthday!</Text> : null}
           </Text>
           {HOME_PAGE.map(description => {
             return (
@@ -180,14 +195,12 @@ const styles = StyleSheet.create({
   backgroundContainer: {
     flex: 1,
     height: null,
-    width: null,
-    backgroundColor: "#F5FCFF"
+    width: null
   },
   homeText: {
     textAlign: "center",
-    fontSize: 18,
-    color: "black",
-    margin: 10
+    fontSize: 20,
+    color: "black"
   },
   buttonStyle: {
     borderRadius: 10,

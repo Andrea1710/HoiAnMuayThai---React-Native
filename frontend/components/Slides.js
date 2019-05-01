@@ -26,7 +26,9 @@ class Slides extends Component {
         >
           <Image source={slide.image} style={styles.image} />
           <Text style={styles.textStyle}>{slide.text}</Text>
-          <Text style={{ color: "white", marginTop: 80 }}>{slide.swipe}</Text>
+          <Text style={{ color: "white", position: "absolute", bottom: 30 }}>
+            {slide.swipe}
+          </Text>
           {this.renderLastSlide(index)}
         </View>
       );
@@ -60,7 +62,7 @@ const styles = {
     fontSize: 30,
     color: "white",
     textAlign: "center",
-    margin: 20
+    margin: 10
   },
   buttonStyle: {
     backgroundColor: "red"

@@ -9,7 +9,6 @@ import {
 import { Text, SocialIcon } from "react-native-elements";
 
 import bgImage from "../assets/background.jpg";
-import { white } from "material-ui/styles/colors";
 
 class AboutusScreen extends Component {
   state = {
