@@ -5,9 +5,8 @@ import { connect } from "react-redux";
 
 class Header extends Component {
   render() {
-    console.log(this.props);
-
     const { viewStyle, textStyle, elementStyle } = styles;
+    const { userInfo } = this.props;
 
     return (
       <View style={viewStyle}>
@@ -20,14 +19,18 @@ class Header extends Component {
         <View style={elementStyle}>
           <Text style={textStyle}>{this.props.headerText}</Text>
         </View>
-        {this.props.token === null ? null : (
+        {(this.props.token === null && userInfo === null) ||
+        this.props.token === null ? null : (
           <View style={elementStyle}>
             <Avatar
               rounded
-              source={{
-                uri: this.props.userInfo.picture.data.url
-              }}
               size="medium"
+              source={{
+                uri:
+                  userInfo.photoUrl !== undefined
+                    ? userInfo.photoUrl
+                    : userInfo.picture.data.url
+              }}
             />
           </View>
         )}
@@ -60,10 +63,10 @@ const styles = {
   }
 };
 
-const mapStateToProps = state => {
+const mapStateToProps = ({ auth }) => {
   return {
-    token: state.auth.token,
-    userInfo: state.auth.userInfo
+    token: auth.token,
+    userInfo: auth.userInfo
   };
 };
 

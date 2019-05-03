@@ -1,12 +1,6 @@
 import React, { Component } from "react";
 import { AsyncStorage } from "react-native";
-import {
-  View,
-  ImageBackground,
-  StyleSheet,
-  ActivityIndicator,
-  Text
-} from "react-native";
+import { View, ImageBackground, StyleSheet, Text } from "react-native";
 import { Avatar, Button, Icon } from "react-native-elements";
 import { connect } from "react-redux";
 
@@ -15,11 +9,12 @@ import bgImage from "../assets/nak-muay.jpg";
 class ProfileScreen extends Component {
   logout = () => {
     AsyncStorage.removeItem("fb_token");
+    this.props.userInfo = null;
     this.props.navigation.navigate("auth");
   };
 
   render() {
-    const { email, name, picture, id, birthday } = this.props.userInfo;
+    const { email, name, id, birthday } = this.props.userInfo;
 
     return (
       <ImageBackground source={bgImage} style={styles.backgroundContainer}>
@@ -30,18 +25,6 @@ class ProfileScreen extends Component {
           }}
         >
           <View>
-            <View style={{ margin: 20, alignItems: "center" }}>
-              <Avatar
-                source={{ uri: picture.data.url }}
-                containerStyle={{
-                  width: 80,
-                  height: 80,
-                  margin: 10
-                }}
-                rounded
-                PlaceholderContent={<ActivityIndicator />}
-              />
-            </View>
             <View style={{ padding: 20 }}>
               <Text style={styles.titlesStyle}>
                 NAME: <Text>{name}</Text>
@@ -49,9 +32,11 @@ class ProfileScreen extends Component {
               <Text style={styles.titlesStyle}>
                 EMAIL: <Text>{email}</Text>
               </Text>
-              <Text style={styles.titlesStyle}>
-                BIRTHDAY: <Text>{birthday}</Text>
-              </Text>
+              {this.props.userInfo.birthday ? (
+                <Text style={styles.titlesStyle}>
+                  BIRTHDAY: <Text>{birthday}</Text>
+                </Text>
+              ) : null}
               <Text style={styles.titlesStyle}>
                 ID: <Text>{id}</Text>
               </Text>

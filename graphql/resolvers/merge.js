@@ -1,8 +1,13 @@
 const Class = require("../../models/class");
+const User = require("../../models/user");
 const DataLoader = require("dataloader");
 
 const classLoader = new DataLoader(classIds => {
   return classes(classIds);
+});
+
+const userLoader = new DataLoader(userIds => {
+  return User.find({ _id: { $in: userIds } });
 });
 
 const classes = async classIds => {
@@ -31,6 +36,18 @@ const singleClass = async classId => {
   }
 };
 
+const user = async userEmail => {
+  try {
+    const user = await userEmail.toString();
+    return {
+      ...user._doc,
+      email: user.email
+    };
+  } catch (err) {
+    throw err;
+  }
+};
+
 const transformClass = mtclass => {
   return {
     ...mtclass._doc,
@@ -38,7 +55,19 @@ const transformClass = mtclass => {
   };
 };
 
+const transformJoining = joining => {
+  return {
+    ...joining._doc,
+    _id: joining.id,
+    userId: joining.userId,
+    userEmail: joining.userEmail,
+    user: user.bind(this, joining._doc.user),
+    mtclass: singleClass.bind(this, joining._doc.mtclass)
+  };
+};
+
 exports.transformClass = transformClass;
+exports.transformJoining = transformJoining;
 
 // exports.user = user;
 // exports.classess = classess;

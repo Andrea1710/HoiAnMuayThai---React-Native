@@ -8,20 +8,19 @@ module.exports = {
       const existingUser = await User.findOne({
         email: args.userInput.email
       });
+
       if (existingUser) {
-        throw new Error("An User with this email exists already");
+        return;
       }
-      const hashedPassword = await bcrypt.hash(args.userInput.password, 12);
 
       const user = new User({
+        userId: args.userInput.userId,
         name: args.userInput.name,
-        email: args.userInput.email,
-        password: hashedPassword,
-        birthday: args.userInput.birthday
+        email: args.userInput.email
       });
 
       const result = await user.save();
-      return { ...result._doc, password: null, _id: result.id };
+      return { ...result._doc, _id: result.id };
     } catch (err) {
       console.log(err);
       throw err;

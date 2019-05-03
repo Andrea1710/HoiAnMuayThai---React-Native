@@ -4,10 +4,9 @@ module.exports = buildSchema(`
 
     type User {
       _id: ID!
+      userId: String!
       name: String!
       email: String!
-      password: String!
-      birthday: String!
     }
 
     type Class {
@@ -18,18 +17,23 @@ module.exports = buildSchema(`
       time: String!
     }
 
+    type Joining {
+      _id: ID!
+      mtclass: Class!
+      userId: String!
+      userEmail: String!
+    }
+
     input UserInput {
+      userId: String!
       name: String!
       email: String!
-      password: String!
-      birthday: String!
     }
 
     type AuthData {
       userId: ID!
       email: String!
       name: String!
-      birthday: String!
     }
 
     input ClassInput {
@@ -42,12 +46,14 @@ module.exports = buildSchema(`
     type RootQuery {
       login(email: String!, password: String!): AuthData!
       classes: [Class!]!
+      joinings(userId: String!, userEmail: String!): [Joining!]!
     }
 
     type RootMutation {
       createUser(userInput: UserInput): User
       createClass(classInput: ClassInput): Class
       deleteClass(classId: ID!): Class
+      joinClass(classId: ID!, userId: String!, userEmail: String!): Joining!
     }
 
     schema {

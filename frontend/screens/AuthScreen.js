@@ -1,4 +1,5 @@
 import React, { Component } from "react";
+import * as Expo from "expo";
 import {
   View,
   TextInput,
@@ -56,7 +57,36 @@ class SignUp extends Component {
     errors: "",
     isLogin: true,
     showPass: true,
-    press: false
+    press: false,
+    signedIn: false,
+    name: "",
+    photoUrl: ""
+  };
+
+  signIn = async () => {
+    try {
+      const result = await Expo.Google.logInAsync({
+        // androidClientId:
+        //   "",
+        iosClientId:
+          "286193454776-fcaemh6e1l82p9ohlt0kavm6k05u99fp.apps.googleusercontent.com",
+        scopes: ["profile", "email"]
+      });
+
+      if (result.type === "success") {
+        console.log("Result:", result);
+        this.setState({
+          signedIn: true,
+          name: result.user.name,
+          photoUrl: result.user.photoUrl
+        });
+        this.props.navigation.navigate("welcome");
+      } else {
+        console.log("cancelled");
+      }
+    } catch (e) {
+      console.log("error", e);
+    }
   };
 
   onChangeHandler = event => {
@@ -87,80 +117,13 @@ class SignUp extends Component {
     this.setState({ formErrors, [name]: value });
   };
 
-  submitHandler = event => {
-    event.preventDefault();
-    const name = this.state.name;
-    const email = this.state.email;
-    const password = this.state.password;
-    const birthday = this.state.birthday;
-
-    if (formValid(this.state)) {
-      console.log(`
-        --SUBMITTING
-          Name: ${this.state.name}
-          Email: ${this.state.email}
-          Password: ${this.state.password}
-          Birthday: ${this.state.birthday}
-      `);
-    } else {
-      console.error("FORM INVALID - DISPLAY ERROR MESSAGE");
-    }
-
-    let requestBody = {
-      query: `
-        query {
-          login(email: "${email}", password: "${password}") {
-            userId
-            email
-            name
-            birthday
-          }
-        }
-      `
-    };
-
-    if (!this.state.isLogin) {
-      requestBody = {
-        query: `
-          mutation {
-            createUser(userInput: {name: "${name}", email: "${email}", password: "${password}", birthday: "${birthday}"}) {
-              _id
-              name
-              email
-              birthday
-            }
-          }
-        `
-      };
-    }
-
-    fetch("http://localhost:8000/graphql", {
-      method: "POST",
-      body: JSON.stringify(requestBody),
-      headers: {
-        "Content-Type": "application/json"
-      }
-    })
-      .then(res => {
-        if (res.status !== 200 && res.status !== 201) {
-          this.setState({
-            errors: "Email or password are incorrect. Check and try again."
-          });
-          throw new Error("Failed");
-        }
-        return res.json();
-      })
-      .then(resData => {
-        console.log("ResData", resData);
-        this.props.navigation.navigate("welcome");
-      })
-      .catch(err => {
-        console.log(err);
-      });
-  };
-
   login = () => {
     this.props.facebookLogin();
+    this.onAuthComplete(this.props);
+  };
+
+  loginGoogle = () => {
+    this.props.googleLogin();
     this.onAuthComplete(this.props);
   };
 
@@ -220,8 +183,6 @@ class SignUp extends Component {
   };
 
   render() {
-    console.log(this.state);
-
     const { formErrors } = this.state;
 
     const login = (
@@ -408,6 +369,15 @@ class SignUp extends Component {
           <Text style={styles.logoText}>HOI AN MUAY THAI GYM</Text>
         </View>
         {this.state.isLogin ? login : signup}
+        {Platform.OS === "ios" ? (
+          <SocialIcon
+            title="Sign In With Google"
+            button
+            type="google"
+            onPress={() => this.loginGoogle()}
+            style={{ width: 300, backgroundColor: "blue" }}
+          />
+        ) : null}
         <SocialIcon
           title="Sign In With Facebook"
           button

@@ -6,10 +6,7 @@ module.exports = {
     try {
       const classes = await Class.find();
       return classes.map(mtclass => {
-        return {
-          ...mtclass._doc,
-          _id: mtclass.id
-        };
+        return transformClass(mtclass);
       });
     } catch (err) {
       throw err;

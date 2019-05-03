@@ -22,7 +22,8 @@ class ClassesScreen extends Component {
     description: "",
     date: "",
     time: "",
-    classes: []
+    classes: [],
+    selectedClass: null
   };
 
   onChangeText = (key, value) => {
@@ -176,13 +177,48 @@ class ClassesScreen extends Component {
       });
   };
 
+  joinClassHandler = classId => {
+    const userId = this.props.userInfo.id;
+    const userEmail = this.props.userInfo.email;
+    const requestBody = {
+      query: `
+          mutation {
+            joinClass(classId: "${classId}", userId: "${userId}", userEmail: "${userEmail}") {
+              _id
+            }
+          }
+        `
+    };
+
+    const token = "ujwrhdjfbckwmhdnfbcjmn";
+
+    fetch("http://localhost:8000/graphql", {
+      method: "POST",
+      body: JSON.stringify(requestBody),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      }
+    })
+      .then(res => {
+        if (res.status !== 200 && res.status !== 201) {
+          throw new Error("Failed!");
+        }
+        return res.json();
+      })
+      .then(resData => {
+        console.log(resData);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   componentDidMount() {
     this.fetchClasses();
   }
 
   render() {
-    console.log(this.state.classes);
-
     return (
       <ImageBackground source={bgImage} style={styles.backgroundContainer}>
         <Text style={{ color: "red", textAlign: "center" }} h1>
@@ -282,11 +318,10 @@ class ClassesScreen extends Component {
                     }}
                     titleStyle={{ color: "#141414", fontWeight: "bold" }}
                     title="JOIN CLASS"
-                    onPress={() => alert("You joined the class!")}
+                    onPress={() => this.joinClassHandler(mtClass._id)}
                   />
                   <Icon
                     name="delete"
-                    onPress={() => console.log("hello")}
                     color="blue"
                     size={30}
                     raised
@@ -351,7 +386,8 @@ const styles = StyleSheet.create({
 
 const mapStateToProps = state => {
   return {
-    token: state.auth.token
+    token: state.auth.token,
+    userInfo: state.auth.userInfo
   };
 };
 
