@@ -29,10 +29,14 @@ class HomeScreen extends Component {
     const fullName = this.props.userInfo.name;
     const name = fullName.split(" ")[0];
 
-    const currentDay = moment().format("MM/D");
-    const { birthday } = this.props.userInfo;
-    const birthdayArr = birthday.split("/");
-    const monthDay = `${birthdayArr[0]}/${birthdayArr[1]}`;
+    let currentDay;
+    let monthDay;
+    if (this.props.userInfo.birthday) {
+      currentDay = moment().format("MM/D");
+      const { birthday } = this.props.userInfo;
+      const birthdayArr = birthday.split("/");
+      monthDay = `${birthdayArr[0]}/${birthdayArr[1]}`;
+    }
 
     return (
       <ImageBackground source={bgImage} style={styles.backgroundContainer}>
@@ -44,7 +48,9 @@ class HomeScreen extends Component {
             ]}
           >
             Hi {name}! {"\n"}
-            {currentDay === monthDay ? <Text>Happy Birthday!</Text> : null}
+            {currentDay === monthDay && this.props.userInfo.birthday ? (
+              <Text>Happy Birthday!</Text>
+            ) : null}
           </Text>
           {HOME_PAGE.map(description => {
             return (

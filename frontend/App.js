@@ -1,10 +1,12 @@
 import React, { Component } from "react";
-import { Permissions, Notifications, Alert } from "expo";
+import { Notifications, Alert } from "expo";
 import { StyleSheet, View, Image } from "react-native";
 import { createBottomTabNavigator, createAppContainer } from "react-navigation";
 
 import { Provider } from "react-redux";
 import store from "./store";
+
+import registerForNotifications from "./services/push_notifications";
 
 import Header from "./components/Header.js";
 import HomeScreen from "./screens/HomeScreen";
@@ -265,31 +267,14 @@ const styles = StyleSheet.create({
 
 const AppContainer = createAppContainer(MainNavigator);
 
-async function register() {
-  const { status } = await Permissions.askAsync(Permissions.NOTIFICATIONS);
-
-  console.log(status);
-
-  if (status !== "granted") {
-    alert("You need to enable permissions and settings");
-    return;
-  }
-  const token = await Notifications.getExpoPushTokenAsync();
-  console.log(status, token);
-}
-
 class App extends Component {
-  componentWillMount() {
-    register();
+  componentDidMount() {
+    registerForNotifications();
     this.listener = Notifications.addListener(this.listen);
   }
 
-  componentWillUnmount() {
-    this.listener && Notifications.removeListener(this.listen);
-  }
-
   listen = ({ origin, data }) => {
-    Alert.alert(data);
+    console.log("origin:", origin, "data:", data);
   };
 
   render() {

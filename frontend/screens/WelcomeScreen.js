@@ -10,24 +10,59 @@ import fight from "../assets/learn-to-fight.jpg";
 import smile from "../assets/smile.jpg";
 
 class WelcomeScreen extends Component {
-  state = { token: null };
-
-  async componentWillMount() {
-    let token = await AsyncStorage.getItem("fb_token");
-
-    if (token) {
-      this.props.navigation.navigate("welcome");
-      this.setState({ token: token });
-    } else {
-      this.setState({ token: false });
-    }
-  }
-
   onSlidesComplete = () => {
     this.props.navigation.navigate("HOME");
   };
 
+  componentDidMount() {
+    this.submitHandler();
+  }
+
+  submitHandler = () => {
+    const id = this.props.userInfo.id;
+    const name = this.props.userInfo.name;
+    const email = this.props.userInfo.email;
+
+    const requestBody = {
+      query: `
+          mutation {
+            createUser(userInput: {userId: "${id}", name: "${name}", email: "${email}"}) {
+              _id
+              userId
+              name
+              email
+            }
+          }
+        `
+    };
+
+    fetch("http://localhost:8000/graphql", {
+      method: "POST",
+      body: JSON.stringify(requestBody),
+      headers: {
+        "Content-Type": "application/json"
+      }
+    })
+      .then(res => {
+        if (res.status !== 200 && res.status !== 201) {
+          this.setState({
+            errors: "Email or password are incorrect. Check and try again."
+          });
+          throw new Error("Failed");
+        }
+        return res.json();
+      })
+      .then(resData => {
+        console.log(resData);
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   render() {
+    console.log(this.props);
+
     const fullName = this.props.userInfo.name;
     const name = fullName.split(" ")[0];
 
@@ -55,13 +90,9 @@ class WelcomeScreen extends Component {
       { text: "...enjoy your time with us!", color: "#141414", image: smile }
     ];
 
-    if (!this.state.token) {
-      return <AppLoading />;
-    }
-
     return (
       <Slides
-        name="{this.props.userInfo.name}"
+        name={this.props.userInfo.name}
         data={SLIDE_DATA}
         onComplete={this.onSlidesComplete}
       />

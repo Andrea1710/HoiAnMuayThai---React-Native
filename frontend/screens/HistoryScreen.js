@@ -1,29 +1,66 @@
 import React, { Component } from "react";
 import { View, ImageBackground, StyleSheet } from "react-native";
 import { Text, ListItem } from "react-native-elements";
-
-import moment from "moment";
+import { connect } from "react-redux";
 
 import bgImage from "../assets/background.jpg";
-import muay_thai_class from "../assets/muay-thai-class.png";
-import kick_boxing_class from "../assets/kick-boxing-class.jpg";
-
-const list = [
-  {
-    date: moment().format("ddd DD-MM-YYYY"),
-    classTitle: "Open Session - Muay Thai Class",
-    time: "17:30",
-    classType: muay_thai_class
-  },
-  {
-    date: moment().format("ddd DD-MM-YYYY"),
-    classTitle: "Morning Session - Kick Boxing Class",
-    time: "09:00",
-    classType: kick_boxing_class
-  }
-];
 
 class HistoryScreen extends Component {
+  state = {
+    joinings: []
+  };
+
+  componentDidMount() {
+    this.fetchJoinings();
+  }
+
+  fetchJoinings = () => {
+    const userId = this.props.userInfo.id;
+    const userEmail = this.props.userInfo.email;
+
+    const requestBody = {
+      query: `
+          query {
+            joinings (userId: "${userId}", userEmail: "${userEmail}") {
+              _id
+             mtclass {
+               _id
+               title
+               date
+               time
+             }
+            }
+          }
+        `
+    };
+
+    const token = "jeryhdgnbvcjmhsdnbfch";
+
+    fetch("http://localhost:8000/graphql", {
+      method: "POST",
+      body: JSON.stringify(requestBody),
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + token
+      }
+    })
+      .then(res => {
+        if (res.status !== 200 && res.status !== 201) {
+          throw new Error("Failed!");
+        }
+        return res.json();
+      })
+      .then(resData => {
+        const joinings = resData.data.joinings;
+        console.log("Joinings:", joinings);
+
+        this.setState({ joinings: joinings });
+      })
+      .catch(err => {
+        console.log(err);
+      });
+  };
+
   render() {
     return (
       <ImageBackground source={bgImage} style={styles.backgroundContainer}>
@@ -32,13 +69,12 @@ class HistoryScreen extends Component {
             History
           </Text>
           <View>
-            {list.map((l, i) => (
+            {this.state.joinings.map((l, i) => (
               <ListItem
                 key={i}
-                leftAvatar={{ source: l.classType }}
-                rightTitle={l.date}
-                title={l.classTitle}
-                subtitle={l.time}
+                rightTitle={l.mtclass.date}
+                title={l.mtclass.title}
+                subtitle={l.mtclass.time}
                 containerStyle={{
                   borderWidth: 1,
                   borderColor: "black",
@@ -62,4 +98,10 @@ const styles = StyleSheet.create({
   }
 });
 
-export default HistoryScreen;
+const mapStateToProps = state => {
+  return {
+    userInfo: state.auth.userInfo
+  };
+};
+
+export default connect(mapStateToProps)(HistoryScreen);
